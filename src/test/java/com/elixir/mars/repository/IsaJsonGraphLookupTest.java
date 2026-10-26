@@ -1,27 +1,27 @@
 package com.elixir.mars.repository;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.elixir.mars.repository.models.isa.Assay;
 import com.elixir.mars.repository.models.isa.DataFile;
 import com.elixir.mars.repository.models.isa.IsaJson;
 import com.elixir.mars.repository.models.isa.OtherMaterial;
 import com.elixir.mars.repository.models.isa.ProcessSequence;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class IsaJsonGraphLookupTest {
-  private static final String ISA_JSON = "MARS/test-data/biosamples-input-isa-multi.json";
+    private static final String ISA_JSON = "MARS/test-data/biosamples-input-isa-multi.json";
 
-  private static Assay assay;
+    private static Assay assay;
 
   @BeforeAll
   static void loadIsaJson() throws IOException {
@@ -54,25 +54,24 @@ class IsaJsonGraphLookupTest {
     assertEquals("#other_material/333", material.getId());
   }
 
-  @Test
-  void testFindDataFilesFromProcessOutputs() {
-    ProcessSequence process = assay.getProcessSequence().get(2);
-    List<DataFile> dataFiles =
-        IsaJsonGraphLookup.findDataFilesFromProcessOutputs(process, assay.getDataFiles());
-    assertEquals(List.of("#data/334", "#data/335"), dataFiles.stream().map(DataFile::getId).toList());
-  }
+    @Test
+    void testFindDataFilesFromProcessOutputs() {
+        ProcessSequence process = assay.getProcessSequence().get(2);
+        List<DataFile> dataFiles = IsaJsonGraphLookup.findDataFilesFromProcessOutputs(process, assay.getDataFiles());
+        assertEquals(List.of("#data/334", "#data/335"), dataFiles.stream().map(DataFile::getId).toList());
+    }
 
-  @Test
-  void testBuildOtherMaterialsById() {
-    Map<String, OtherMaterial> materialsById = IsaJsonGraphLookup.buildOtherMaterialsById(assay.getMaterials());
-    assertEquals("#other_material/332", materialsById.get("#other_material/332").getId());
-  }
+    @Test
+    void testBuildOtherMaterialsById() {
+        Map<String, OtherMaterial> materialsById = IsaJsonGraphLookup.buildOtherMaterialsById(assay.getMaterials());
+        assertEquals("#other_material/332", materialsById.get("#other_material/332").getId());
+    }
 
-  @Test
-  void testNormalizeDataFileId() {
-    assertEquals("#data/334", IsaJsonGraphLookup.normalizeDataFileId("#data_file/334"));
-    assertEquals("#data/334", IsaJsonGraphLookup.normalizeDataFileId("#data/334"));
-    assertEquals("#sample/331", IsaJsonGraphLookup.normalizeDataFileId("#sample/331"));
-    assertNull(IsaJsonGraphLookup.normalizeDataFileId(null));
-  }
+    @Test
+    void testNormalizeDataFileId() {
+        assertEquals("#data/334", IsaJsonGraphLookup.normalizeDataFileId("#data_file/334"));
+        assertEquals("#data/334", IsaJsonGraphLookup.normalizeDataFileId("#data/334"));
+        assertEquals("#sample/331", IsaJsonGraphLookup.normalizeDataFileId("#sample/331"));
+        assertNull(IsaJsonGraphLookup.normalizeDataFileId(null));
+    }
 }

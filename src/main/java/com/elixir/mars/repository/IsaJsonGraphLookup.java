@@ -6,6 +6,7 @@ import com.elixir.mars.repository.models.isa.Materials;
 import com.elixir.mars.repository.models.isa.OtherMaterial;
 import com.elixir.mars.repository.models.isa.Output;
 import com.elixir.mars.repository.models.isa.ProcessSequence;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +23,8 @@ public final class IsaJsonGraphLookup {
   private static final String DATA_FILE_ID_PREFIX = "#data_file/";
   private static final String DATA_ID_PREFIX = "#data/";
 
-  private IsaJsonGraphLookup() {}
+  private IsaJsonGraphLookup() {
+  }
 
   /**
    * Finds the process that produced the given output material or data file.
@@ -31,7 +33,7 @@ public final class IsaJsonGraphLookup {
    * object, so data file IDs are normalized before comparison.
    */
   public static ProcessSequence findProcessByOutputId(
-      final List<ProcessSequence> processSequence, final String outputId) {
+          final List<ProcessSequence> processSequence, final String outputId) {
     if (processSequence == null || outputId == null) {
       return null;
     }
@@ -64,7 +66,7 @@ public final class IsaJsonGraphLookup {
    * assay materials collection and returns the matching other material, if one exists.
    */
   public static OtherMaterial findOtherMaterialFromProcessInput(
-      final ProcessSequence process, final Materials materials) {
+          final ProcessSequence process, final Materials materials) {
     if (process == null || process.getInputs() == null) {
       return null;
     }
@@ -91,7 +93,7 @@ public final class IsaJsonGraphLookup {
    * normalizes those IDs before matching them against the assay data file list.
    */
   public static List<DataFile> findDataFilesFromProcessOutputs(
-      final ProcessSequence process, final List<DataFile> assayDataFiles) {
+          final ProcessSequence process, final List<DataFile> assayDataFiles) {
     final List<DataFile> dataFiles = new ArrayList<>();
     if (process == null || process.getOutputs() == null || assayDataFiles == null) {
       return dataFiles;
@@ -117,7 +119,9 @@ public final class IsaJsonGraphLookup {
     return dataFiles;
   }
 
-  /** Builds a lookup map of assay other materials keyed by their ISA IDs. */
+  /**
+   * Builds a lookup map of assay other materials keyed by their ISA IDs.
+   */
   public static Map<String, OtherMaterial> buildOtherMaterialsById(final Materials materials) {
     final Map<String, OtherMaterial> otherMaterialsById = new HashMap<>();
     if (materials == null || materials.getOtherMaterials() == null) {
@@ -133,7 +137,9 @@ public final class IsaJsonGraphLookup {
     return otherMaterialsById;
   }
 
-  /** Treat ISA #data_file/... and process #data/... references as equivalent. */
+  /**
+   * Treat ISA #data_file/... and process #data/... references as equivalent.
+   */
   public static String normalizeDataFileId(final String id) {
     return id == null ? null : id.replace(DATA_FILE_ID_PREFIX, DATA_ID_PREFIX);
   }
